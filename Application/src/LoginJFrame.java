@@ -4,6 +4,8 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -122,6 +124,7 @@ public class LoginJFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_jTextField1ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         String login = jTextField1.getText();
         String password = new String(jPasswordField1.getPassword());
         try {
@@ -129,19 +132,36 @@ public class LoginJFrame extends javax.swing.JFrame {
             if (!role.equals("badAuthorization")){
                 if (role.equals("inventory")){
                     // open inventory
+                     dispose();
+                    NewInventoryMainFrame newWindow = new NewInventoryMainFrame();
+                    newWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                    newWindow.setVisible(true);
                 }
                 else if (role.equals("order")){
                     // open order
+                     dispose();
+                    NewOrderJFrame newWindow = new NewOrderJFrame();
+                    newWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                    newWindow.setVisible(true);
                 }
                 else if (role.equals("admin")){
                     // open admin
+                     dispose();
+                    NewAdminAppJFrame newWindow = new NewAdminAppJFrame();
+                    newWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                    newWindow.setVisible(true);
                 }
                 else if (role.equals("shipping")){
                     // open shipping
+                     dispose();
+                    NewShippingJFrame newWindow = new NewShippingJFrame();
+                    newWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                    newWindow.setVisible(true);
                 }
             }
             else {
                 // notify user about wrong password
+                JOptionPane.showMessageDialog(null, "Wrong Username or Password. Please try again.");
             }
         } catch (RemoteException ex) {
             Logger.getLogger(LoginJFrame.class.getName()).log(Level.SEVERE, null, ex);

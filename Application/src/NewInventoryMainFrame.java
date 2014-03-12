@@ -9,6 +9,8 @@ import java.util.LinkedList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 
 /******************************************************************************
  * File:NewJFrame.java
@@ -36,7 +38,7 @@ import javax.swing.table.DefaultTableModel;
 public class NewInventoryMainFrame extends javax.swing.JFrame {
 
     String versionID = "v2.10.10";
-    RemoteInterface remote;   
+    private static RemoteInterface remote;
 
     /** Creates new form AddInventoryMainFrame */
     public NewInventoryMainFrame() {
@@ -378,19 +380,31 @@ public class NewInventoryMainFrame extends javax.swing.JFrame {
         */
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    @SuppressWarnings("empty-statement")
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // This button will list the inventory for the product selected
-        String table = (String) jComboBox1.getSelectedItem();
+        int index = jComboBox1.getSelectedIndex();
+        String table = findTableByIndex(index);
+        System.out.println(index);
         LinkedList<InventoryItem> inventory = null;
-        /*try {
+        try {
             inventory = remote.listInventory(table);
         } catch (RemoteException ex) {
             Logger.getLogger(NewInventoryMainFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
-        */
-        DefaultTableModel dtm = new DefaultTableModel();
+        
+        TableColumnModel tcm = jTable1.getTableHeader().getColumnModel(); 
+        Object[] columnNames = new Object[tcm.getColumnCount()];
+        for (int i = 0; i < tcm.getColumnCount(); i++)  
+        {  
+            TableColumn tc = tcm.getColumn(i);
+            columnNames[i] = tc.getHeaderValue();
+        }  
+        
+        DefaultTableModel dtm = new DefaultTableModel(columnNames, 0);
+        
         for (InventoryItem item: inventory){
-            Object[] data = {"EEP", item.getProductID(), item.getDescription(), item.getQuantity(), item.getPerUnitCost() };
+            Object[] data = {table, item.getProductID(), item.getDescription(), item.getQuantity(), item.getPerUnitCost() };
             dtm.addRow(data);
         }
         jTable1.setModel(dtm);
@@ -691,10 +705,38 @@ public class NewInventoryMainFrame extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jComboBox1ActionPerformed
 
+    private String findTableByIndex(int index){
+        String table = "";
+        switch (index){
+            case 0: table = "trees"; break;
+            case 1: table = "seeds"; break;
+            case 2: table = "shrubs"; break;
+            case 3: table = "cultureboxes"; break;
+            case 4: table = "genomics"; break;
+            case 5: table = "processing"; break;
+            case 6: table = "referencematerials"; break;
+            default: break;
+        }
+        return table;
+    }
+    
     /**
     * @param args the command line arguments
     */
     public static void main(String args[]) {
+        try {
+//	System.setProperty("java.security.policy", "client.policy");
+            System.setProperty("java.security.policy","policy.txt");
+            System.setSecurityManager(new java.rmi.RMISecurityManager());
+            remote = (RemoteInterface) Naming.lookup("//localhost:1234/Inventory");
+        } catch (NotBoundException e) {
+            e.printStackTrace();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+        
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new NewInventoryMainFrame().setVisible(true);

@@ -27,28 +27,25 @@ public class DBHelper {
 
         if (dbName.equals("inventory")) {
             ps = DBConn.prepareStatement(
-                    "INSERT INTO ? (product_code, description, quantity, price)"
+                    "INSERT INTO " + table + " (product_code, description, quantity, price)"
                     + "VALUES (?, ?, ?, ?);");
         } else {
             ps = DBConn.prepareStatement(
-                    "INSERT INTO ? (productid, productdescription, productquantity, productprice)"
+                    "INSERT INTO " + table + " (productid, productdescription, productquantity, productprice)"
                     + "VALUES (?, ?, ?, ?);");
         }
 
-        ps.setString(1, table);
-        ps.setString(2, productID);
-        ps.setString(3, description);
-        ps.setInt(4, quantity);
-        ps.setFloat(5, perUnitCost);
+        ps.setString(1, productID);
+        ps.setString(2, description);
+        ps.setInt(3, quantity);
+        ps.setFloat(4, perUnitCost);
         ps.executeQuery();
     }
 
     public static LinkedList<InventoryItem> listItems(String table) throws ClassNotFoundException, SQLException {
         String dbName = findDatabaseByTable(table);
         Connection DBConn = createConnection("localhost", dbName);
-        PreparedStatement ps = DBConn.prepareStatement("SELECT * FROM ?");
-        ps.setString(1, table);
-
+        PreparedStatement ps = DBConn.prepareStatement("SELECT * FROM " + table + ";");
         ResultSet res = ps.executeQuery();
 
         LinkedList<InventoryItem> list = new LinkedList<InventoryItem>();
@@ -69,13 +66,12 @@ public class DBHelper {
         PreparedStatement ps;
 
         if (dbName.equals("inventory")) {
-            ps = DBConn.prepareStatement("DELETE FROM ? WHERE product_code = ?");
+            ps = DBConn.prepareStatement("DELETE FROM " + table + " WHERE product_code = ?;");
         } else {
-            ps = DBConn.prepareStatement("DELETE FROM ? WHERE productid = ?");
+            ps = DBConn.prepareStatement("DELETE FROM " + table + " WHERE productid = ?;");
         }
 
-        ps.setString(1, table);
-        ps.setString(2, productID);
+        ps.setString(1, productID);
 
         ps.executeUpdate();
     }
@@ -86,13 +82,12 @@ public class DBHelper {
         PreparedStatement ps;
 
         if (dbName.equals("inventory")) {
-            ps = DBConn.prepareStatement("UPDATE ? SET quantity=(quantity-1) where product_code = ?;");
+            ps = DBConn.prepareStatement("UPDATE " + table + " SET quantity=(quantity-1) where product_code = ?;");
         } else {
-            ps = DBConn.prepareStatement("UPDATE ? SET productquantity=(productquantity-1) where productid = ?;");
+            ps = DBConn.prepareStatement("UPDATE " + table + " SET productquantity=(productquantity-1) where productid = ?;");
         }
 
-        ps.setString(1, table);
-        ps.setString(2, productID);
+        ps.setString(1, productID);
 
         ps.executeUpdate();
     }
@@ -101,15 +96,14 @@ public class DBHelper {
             float fCost, List<InventoryItem> items) throws ClassNotFoundException, SQLException {
         String dbName = findDatabaseByTable("order");
         Connection DBConn = createConnection("localhost", dbName);
-        PreparedStatement ps = DBConn.prepareStatement("CREATE TABLE ? "
+        
+        Calendar rightNow = Calendar.getInstance();
+        String orderTableName = "order" + String.valueOf(rightNow.getTimeInMillis());
+        
+        PreparedStatement ps = DBConn.prepareStatement("CREATE TABLE " + orderTableName
                 + "(item_id int unsigned not null auto_increment primary key, "
                 + "product_id varchar(20), description varchar(80), "
                 + "item_price float(7,2) );");
-
-        Calendar rightNow = Calendar.getInstance();
-        String orderTableName = "order" + String.valueOf(rightNow.getTimeInMillis());
-
-        ps.setString(1, orderTableName);
         ps.executeUpdate();
 
         int TheHour = rightNow.get(Calendar.HOUR_OF_DAY);
@@ -123,7 +117,7 @@ public class DBHelper {
 
         ps = DBConn.prepareStatement("INSERT INTO orders "
                 + "(order_date, first_name, last_name, address, phone, total_cost, shipped, ordertable) "
-                + " VALUES ( ?, ?, ?, ?, ?, ?, ?, ?)");
+                + " VALUES ( ?, ?, ?, ?, ?, ?, ?, ?);");
         ps.setString(1, dateTimeStamp);
         ps.setString(2, firstName);
         ps.setString(3, lastName);
@@ -135,13 +129,12 @@ public class DBHelper {
         ps.executeUpdate();
 
         for (InventoryItem item : items) {
-            ps = DBConn.prepareStatement("INSERT INTO ? "
-                    + "(product_id, description, item_price) "
-                    + "VALUES (?, ?, ?)");
-            ps.setString(1, orderTableName);
-            ps.setString(2, item.getProductID());
-            ps.setString(3, item.getDescription());
-            ps.setFloat(4, item.getPerUnitCost());
+            ps = DBConn.prepareStatement("INSERT INTO " + orderTableName
+                    + " (product_id, description, item_price) "
+                    + "VALUES (?, ?, ?);");
+            ps.setString(1, item.getProductID());
+            ps.setString(2, item.getDescription());
+            ps.setFloat(3, item.getPerUnitCost());
             ps.executeUpdate();
         }
     }
@@ -157,7 +150,7 @@ public class DBHelper {
     public static List<OrderInfo> getOrders(int shipped) throws ClassNotFoundException, SQLException {
         String dbName = findDatabaseByTable("order");
         Connection DBConn = createConnection("localhost", dbName);
-        PreparedStatement ps = DBConn.prepareStatement("SELECT * FROM orders WHERE shipped = 1");
+        PreparedStatement ps = DBConn.prepareStatement("SELECT * FROM orders WHERE shipped = 1;");
         ResultSet res = ps.executeQuery();
 
         List<OrderInfo> orderList = new LinkedList<OrderInfo>();
@@ -180,7 +173,7 @@ public class DBHelper {
     public static OrderInfo getOrderInfo(int orderID) throws ClassNotFoundException, SQLException {
         String dbName = findDatabaseByTable("order");
         Connection DBConn = createConnection("localhost", dbName);
-        PreparedStatement ps = DBConn.prepareStatement("SELECT * FROM orders WHERE order_id = ?");
+        PreparedStatement ps = DBConn.prepareStatement("SELECT * FROM orders WHERE order_id = ?;");
         ps.setInt(1, orderID);
 
         ResultSet res = ps.executeQuery();
@@ -203,7 +196,7 @@ public class DBHelper {
     public static void shipOrder(int orderId) throws ClassNotFoundException, SQLException {
         String dbName = findDatabaseByTable("order");
         Connection DBConn = createConnection("localhost", dbName);
-        PreparedStatement ps = DBConn.prepareStatement("UPDATE orders SET shipped = ? WHERE order_id= ?");
+        PreparedStatement ps = DBConn.prepareStatement("UPDATE orders SET shipped = ? WHERE order_id = ?;");
         ps.setBoolean(1, true);
         ps.setInt(2, orderId);
         ps.executeQuery();
@@ -212,7 +205,7 @@ public class DBHelper {
     public static String login(String login, String password) throws ClassNotFoundException, SQLException {
         String dbName = findDatabaseByTable("users");
         Connection DBConn = createConnection("localhost", dbName);
-        PreparedStatement ps = DBConn.prepareStatement("SELECT * FROM users WHERE login = ?");
+        PreparedStatement ps = DBConn.prepareStatement("SELECT * FROM users WHERE login = ?;");
         ps.setString(1, login);
         ResultSet res = ps.executeQuery();
         while (res.next()) {

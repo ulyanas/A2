@@ -46,7 +46,9 @@ public class NewInventoryMainFrame extends javax.swing.JFrame {
         initComponents();
         jLabel1.setText("Inventory Management Application " + versionID);
         try {
-            remote = (RemoteInterface) Naming.lookup("//localhost:1234/Inventory");
+            System.setProperty("java.security.policy", "policy.txt");
+            System.setSecurityManager(new java.rmi.RMISecurityManager());
+            remote = (RemoteInterface) Naming.lookup("//localhost:1234/Remote");
         } catch (NotBoundException ex) {
             Logger.getLogger(NewInventoryMainFrame.class.getName()).log(Level.SEVERE, null, ex);
         } catch (MalformedURLException ex) {
@@ -164,10 +166,7 @@ public class NewInventoryMainFrame extends javax.swing.JFrame {
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
+
             },
             new String [] {
                 "DB", "Product ID", "Description", "Quantity", "Price"
@@ -189,6 +188,7 @@ public class NewInventoryMainFrame extends javax.swing.JFrame {
             }
         });
         jTable1.getTableHeader().setResizingAllowed(false);
+        jTable1.getTableHeader().setReorderingAllowed(false);
         jScrollPane1.setViewportView(jTable1);
         if (jTable1.getColumnModel().getColumnCount() > 0) {
             jTable1.getColumnModel().getColumn(0).setResizable(false);
@@ -276,7 +276,7 @@ public class NewInventoryMainFrame extends javax.swing.JFrame {
                                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                                     .addComponent(jLabel7)
                                                     .addComponent(jLabel8))))))
-                                .addGap(0, 9, Short.MAX_VALUE))))
+                                .addGap(0, 105, Short.MAX_VALUE))))
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
                         .addComponent(jScrollPane3)))
@@ -495,7 +495,6 @@ public class NewInventoryMainFrame extends javax.swing.JFrame {
     private void updateTable() {
         int index = jComboBox1.getSelectedIndex();
         String table = findTableByIndex(index);
-        System.out.println(index);
         LinkedList<InventoryItem> inventory = null;
         try {
             inventory = remote.listInventory(table);
@@ -523,19 +522,6 @@ public class NewInventoryMainFrame extends javax.swing.JFrame {
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-        try {
-//	System.setProperty("java.security.policy", "client.policy");
-            System.setProperty("java.security.policy", "policy.txt");
-            System.setSecurityManager(new java.rmi.RMISecurityManager());
-            remote = (RemoteInterface) Naming.lookup("//localhost:1234/Inventory");
-        } catch (NotBoundException e) {
-            e.printStackTrace();
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
-
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new NewInventoryMainFrame().setVisible(true);

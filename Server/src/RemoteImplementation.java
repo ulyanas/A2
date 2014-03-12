@@ -11,6 +11,7 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.SQLException;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -89,4 +90,16 @@ public class RemoteImplementation extends UnicastRemoteObject implements RemoteI
         }
         return result;
     }    
+
+    @Override
+    public void submitOrder(String firstName, String lastName, String customerAddress,
+            String phoneNumber, float fCost, List<InventoryItem> items) throws RemoteException {
+        try {
+            DBHelper.submitOrder(firstName, lastName, customerAddress, phoneNumber, fCost, items);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(RemoteImplementation.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(RemoteImplementation.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 }

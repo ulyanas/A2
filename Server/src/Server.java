@@ -26,7 +26,7 @@ public class Server {
             System.setSecurityManager(new java.rmi.RMISecurityManager());
             RemoteImplementation remote = new RemoteImplementation();
             LocateRegistry.createRegistry(1234);
-            Naming.bind("//localhost:1234/Inventory", remote);
+            Naming.bind("//localhost:1234/Remote", remote);
             System.out.println("Remote Class Bind Success");
         } catch (RemoteException e) {
             System.out.println("Errors on creating remote object");

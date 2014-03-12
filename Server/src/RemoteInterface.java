@@ -5,7 +5,9 @@
  */
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.sql.SQLException;
 import java.util.LinkedList;
+import java.util.List;
 
 /**
  *
@@ -22,4 +24,7 @@ public interface RemoteInterface extends Remote {
      public void decrementItem(String table, String productID) throws RemoteException;
 
      public String login(String login, String password) throws RemoteException;
+     
+     public void submitOrder(String firstName, String lastName, String customerAddress, String phoneNumber,
+            float fCost, List<InventoryItem> items) throws RemoteException;
 }

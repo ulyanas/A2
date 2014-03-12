@@ -200,7 +200,7 @@ public class LoginJFrame extends javax.swing.JFrame {
 //	System.setProperty("java.security.policy", "client.policy");
             System.setProperty("java.security.policy","policy.txt");
             System.setSecurityManager(new java.rmi.RMISecurityManager());
-            remote = (RemoteInterface) Naming.lookup("//localhost:1234/Inventory");
+            remote = (RemoteInterface) Naming.lookup("//localhost:1234/Remote");
         } catch (NotBoundException e) {
             e.printStackTrace();
         } catch (MalformedURLException e) {

@@ -39,7 +39,7 @@ public class DBHelper {
         ps.setString(2, description);
         ps.setInt(3, quantity);
         ps.setFloat(4, perUnitCost);
-        ps.executeQuery();
+        ps.executeUpdate();
     }
 
     public static LinkedList<InventoryItem> listItems(String table) throws ClassNotFoundException, SQLException {
@@ -58,6 +58,30 @@ public class DBHelper {
             list.add(item);
         }
         return list;
+    }
+    
+    public static InventoryItem getItemInfo(String table, String productID) throws ClassNotFoundException, SQLException {
+        String dbName = findDatabaseByTable(table);
+        Connection DBConn = createConnection("localhost", dbName);
+        PreparedStatement ps;
+
+        if (dbName.equals("inventory")) {
+            ps = DBConn.prepareStatement("SELECT * FROM " + table + " WHERE product_code = ?;");
+        } else {
+            ps = DBConn.prepareStatement("SELECT * FROM " + table + " WHERE productid = ?;");
+        }
+
+        ps.setString(1, productID);
+
+        ResultSet res = ps.executeQuery();
+        InventoryItem item = new InventoryItem();
+        while (res.next()){
+            item.setProductID(res.getString(1));
+            item.setDescription(res.getString(2));
+            item.setQuantity(res.getInt(3));
+            item.setPerUnitCost(res.getFloat(4));
+        }
+        return item;
     }
 
     public static void deleteItem(String table, String productID) throws ClassNotFoundException, SQLException {

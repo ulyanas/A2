@@ -63,7 +63,13 @@ public class RemoteImplementation extends UnicastRemoteObject implements RemoteI
     @Override
     public void decrementItem(String table, String productID) throws RemoteException {
         try {
-            DBHelper.decrementItem(table, productID);
+            int productCount = DBHelper.getItemInfo(table, productID).getQuantity();
+            if (productCount <= 1){
+                DBHelper.deleteItem(table, productID);
+            }
+            else {
+                DBHelper.decrementItem(table, productID);
+            }
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(RemoteImplementation.class.getName()).log(Level.SEVERE, null, ex);
         } catch (SQLException ex) {

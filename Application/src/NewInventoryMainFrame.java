@@ -367,14 +367,48 @@ public class NewInventoryMainFrame extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // This button will add an item to the inventory
+        try{
+        jTextArea2.setText("");
         int index = jComboBox1.getSelectedIndex();
         String table = findTableByIndex(index);
         String productID = (String) jTextField2.getText();
         String description = (String) jTextField5.getText();
-        int quantity = Integer.parseInt(jTextField4.getText());
-        float perUnitCost = Float.parseFloat(jTextField3.getText());
-        try {
-            remote.addItem(table, productID, description, quantity, perUnitCost);
+        int quantity = 0;  
+        try{
+            quantity = Integer.parseInt(jTextField4.getText());
+        }
+        catch(NumberFormatException e){
+            quantity =0;
+        }
+        float perUnitCost =0;
+        try{
+        perUnitCost = Float.parseFloat(jTextField3.getText());
+        }
+         catch(NumberFormatException e){
+            perUnitCost =0;
+        }
+        
+            boolean valid = true;
+            
+             if(productID.equals("")){
+                 valid = false;
+                 jTextArea2.append("Must supply product ID \n");
+                 
+             }
+             if(description.equals("")){
+                 valid = false;
+                 jTextArea2.append("Must supply description \n ");
+             }
+             if(quantity <= 0 ){
+                 valid = false;
+                 jTextArea2.append("Must supply quanitity greater than 0 \n ");
+             }
+             if(perUnitCost <= 0){
+                 valid = false;
+                 jTextArea2.append("Must supply per unit cost and it should be greater than 0 \n ");
+             }
+             else if(valid == true)
+             remote.addItem(table, productID, description, quantity, perUnitCost);
         } catch (RemoteException ex) {
             Logger.getLogger(NewInventoryMainFrame.class.getName()).log(Level.SEVERE, null, ex);
         }

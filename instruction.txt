@@ -1,0 +1,3 @@
+create database userinfo;
+
+mysql -u root –p[root pwd] -D userinfo < userinfo.sql

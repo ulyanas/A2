@@ -1,9 +1,17 @@
 package application;
 
-
+import java.net.MalformedURLException;
+import java.rmi.Naming;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.table.DefaultTableModel;
 
 /******************************************************************************
  * File:NewJFrame.java
@@ -30,12 +38,22 @@ import java.sql.ResultSet;
  */
 public class NewInventoryMainFrame extends javax.swing.JFrame {
 
-       String versionID = "v2.10.10";
+    String versionID = "v2.10.10";
+    RemoteInterface remote;   
 
     /** Creates new form AddInventoryMainFrame */
     public NewInventoryMainFrame() {
         initComponents();
         jLabel1.setText("Inventory Management Application " + versionID);
+           try {
+               remote = (RemoteInterface) Naming.lookup("//localhost:1234/Inventory");
+           } catch (NotBoundException ex) {
+               Logger.getLogger(NewInventoryMainFrame.class.getName()).log(Level.SEVERE, null, ex);
+           } catch (MalformedURLException ex) {
+               Logger.getLogger(NewInventoryMainFrame.class.getName()).log(Level.SEVERE, null, ex);
+           } catch (RemoteException ex) {
+               Logger.getLogger(NewInventoryMainFrame.class.getName()).log(Level.SEVERE, null, ex);
+           }
     }
 
     /** This method is called from within the constructor to
@@ -184,7 +202,6 @@ public class NewInventoryMainFrame extends javax.swing.JFrame {
 
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Trees", "Seeds", "Shrubs", "Culture Boxes", "Genomics", "Processing", "Reference Materials" }));
         jComboBox1.setMinimumSize(new java.awt.Dimension(210, 40));
-        jComboBox1.setSize(new java.awt.Dimension(96, 35));
         jComboBox1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jComboBox1ActionPerformed(evt);
@@ -349,290 +366,25 @@ public class NewInventoryMainFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-
-        // Adds inventory to database
-
-        Boolean connectError = false;   // Error flag
-        Connection DBConn = null;       // MySQL connection handle
-        String description;             // Tree, seed, or shrub description
-        Boolean executeError = false;   // Error flag
-        String errString = null;        // String for displaying errors
-        int executeUpdateVal;           // Return value from execute indicating effected rows
-        Boolean fieldError = false;     // Error flag
-        String msgString = null;        // String for displaying non-error messages
-        ResultSet res = null;           // SQL query result set pointer
-        String tableSelected = null;    // String used to determine which data table to use
-        Integer quantity;               // Quantity of trees, seeds, or shrubs
-        Float perUnitCost;              // Cost per tree, seed, or shrub unit
-        String productID = null;        // Product id of tree, seed, or shrub
-        java.sql.Statement s = null;    // SQL statement pointer
-        String SQLstatement = null;     // String for building SQL queries
-        
-        // Check to make sure a radio button is selected
-       
-        jTextArea1.setText("");
-        
-       
-       
-            //Make sure there is a product description
-            if ( jTextField5.getText().length() == 0 )
-            {
-                fieldError = true;
-                jTextArea1.append("\nMust enter a product description.");
-                
-            } else {
-     
-                //Make sure there is a product ID
-                if ( jTextField2.getText().length() == 0 )
-                {
-                    fieldError = true;
-                    jTextArea1.append("\nMust enter a product ID.");
-                } else {
-            
-                    //Make sure there is a price
-                    if ( jTextField3.getText().length() == 0 )
-                    {
-                        fieldError = true;
-                        jTextArea1.append("\nMust enter a product price.");
-                    } else {
-                    
-                        //Make sure quantity is specified
-                        if ( jTextField4.getText().length() == 0 )
-                        {
-                            fieldError = true;
-                            jTextArea1.append("\nMust enter a product quantity.");
-                        } // quantity
-                    } // price
-                } // product ID
-            } //product description
-     
-
-        //Now, if there was no error in the data fields, we try to
-        //connect to the database.
-        
-        if ( !fieldError )
-        {
-            try
-            {
-                msgString = ">> Establishing Driver...";
-                jTextArea1.setText("\n"+msgString);
-
-                //load JDBC driver class for MySQL
-                Class.forName( "com.mysql.jdbc.Driver" );
-
-                msgString = ">> Setting up URL...";
-                jTextArea1.append("\n"+msgString);
-
-                //define the data source
-                String SQLServerIP = jTextField1.getText();
-                String sourceURL = "jdbc:mysql://" + SQLServerIP + ":3306/inventory";
-
-                msgString = ">> Establishing connection with: " + sourceURL + "...";
-                jTextArea1.append("\n"+msgString);
-
-                //create a connection to the db
-                DBConn = DriverManager.getConnection(sourceURL,"remote","remote_pass");
-
-            } catch (Exception e) {
-
-                errString =  "\nProblem connecting to database:: " + e;
-                jTextArea1.append(errString);
-                connectError = true;
-
-            } // end try-catch
-        } // fieldError check
-
-        //If there is not connection error, then we form the SQL statement
-        //and then execute it.
-
-        if (!connectError && !fieldError )
-        {
-            try
-            {
-                // get the data from the text fields
-                description = jTextField5.getText();
-                productID = jTextField2.getText();
-                quantity = Integer.parseInt(jTextField4.getText());
-                perUnitCost = Float.parseFloat(jTextField3.getText());
-
-                // create an SQL statement variable and create the INSERT
-                // query to insert the new inventory into the database
-
-                s = DBConn.createStatement();
-
-                // if trees are selected then insert inventory into trees
-                // table
-                if (jComboBox1.getSelectedIndex()==0)
-                {
-                    SQLstatement = ( "INSERT INTO trees (product_code, " +
-                            "description, quantity, price) VALUES ( '" +
-                            productID + "', " + "'" + description + "', " +
-                            quantity + ", " + perUnitCost + ");");
-                    
-                    tableSelected = "TREES";
-
-                }
-
-                // if shrubs are selected then insert inventory into strubs
-                // table
-                if (jComboBox1.getSelectedIndex()==1)
-                {
-                    SQLstatement = ( "INSERT INTO shrubs (product_code, " +
-                            "description, quantity, price) VALUES ( '" +
-                            productID + "', " + "'" + description + "', " +
-                            quantity + ", " + perUnitCost + ");");
-                    
-                    tableSelected = "SHRUBS";
-                }
-
-                // if seeds are selected then insert inventory into seeds
-                // table
-                if (jComboBox1.getSelectedIndex()==2)
-                {
-                    SQLstatement = ( "INSERT INTO seeds (product_code, " +
-                            "description, quantity, price) VALUES ( '" +
-                            productID + "', " + "'" + description + "', " +
-                            quantity + ", " + perUnitCost + ");");
-                    
-                    tableSelected = "SEEDS";
-                }
-
-                // execute the update
-                executeUpdateVal = s.executeUpdate(SQLstatement);
-
-                // let the user know all went well
-
-                jTextArea1.append("\nINVENTORY UPDATED... The following was added to the " + tableSelected + " inventory...\n");
-                jTextArea1.append("\nProduct Code:: " + productID);
-                jTextArea1.append("\nDescription::  " + description);
-                jTextArea1.append("\nQuantity::     " + quantity);
-                jTextArea1.append("\nUnit Cost::    " + perUnitCost);
-
-            } catch (Exception e) {
-
-                errString =  "\nProblem adding inventory:: " + e;
-                jTextArea1.append(errString);
-                executeError = true;
-
-            } // try
-
-        } //execute SQL check
-
+        // This button will add an item to the inventory
+        String table = (String) jComboBox1.getSelectedItem();
+        String productID = (String) jTextField2.getText();
+        String description = (String) jTextField5.getText();
+        int quantity = Integer.parseInt(jTextField4.getText());
+        float perUnitCost = Float.parseFloat(jTextField3.getText());
+        remote.addItem(table, productID, description, quantity, perUnitCost);
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // This button will list the inventory for the product selected by the
-        // radio button
-
-        Boolean connectError = false;   // Error flag
-        Connection DBConn = null;       // MySQL connection handle
-        Boolean executeError = false;   // Error flag
-        String errString = null;        // String for displaying errors
-        Boolean fieldError = true;      // Error flag
-        String msgString = null;        // String for displaying non-error messages
-        ResultSet res = null;           // SQL query result set pointer
-        String tableSelected = null;    // String used to determine which data table to use
-        java.sql.Statement s = null;    // SQL statement pointer
-
-        // Check to make sure a radio button is selected
-        
-
-            msgString = "Must select Tree, Seeds, or Shrubs radio button.";
-            jTextArea1.setText("\n"+msgString);
-       
-
-        //Now, we try to connect to the inventory database.
-        if (!fieldError)
-        {
-            //Clear the fields - they are not needed and may cause confusion
-            jTextField2.setText("");
-            jTextField3.setText("");
-            jTextField4.setText("");
-            jTextField5.setText("");
-            jTextArea1.setText("");
-            
-            try
-            {
-                msgString = ">> Establishing Driver...";
-                jTextArea1.setText("\n"+msgString);
-
-                //load JDBC driver class for MySQL
-                Class.forName( "com.mysql.jdbc.Driver" );
-
-                msgString = ">> Setting up URL...";
-                jTextArea1.append("\n"+msgString);
-
-                //define the data source
-                String SQLServerIP = jTextField1.getText();
-                String sourceURL = "jdbc:mysql://" + SQLServerIP + ":3306/inventory";
-
-                msgString = ">> Establishing connection with: " + sourceURL + "...";
-                jTextArea1.append("\n"+msgString);
-
-                //create a connection to the db
-                DBConn = DriverManager.getConnection(sourceURL,"remote","remote_pass");
-
-            } catch (Exception e) {
-
-                errString =  "\nProblem connecting to database:: " + e;
-                jTextArea1.append(errString);
-                connectError = true;
-
-            } // end try-catch
-
-        } // fielderror check - make sure a product is selected
-    
-        //If there is not connection error, then we form the SQL statement
-        //and then execute it.
-
-        if (!connectError && !fieldError)
-        {
-            try
-            {
-                // create an SQL statement variable and create the INSERT
-                // query to insert the new inventory into the database
-
-                s = DBConn.createStatement();
-
-                // now we build a query to list the inventory table contents
-                // for the user
-                // ... here is the SQL for trees
-                if (jComboBox1.getSelectedIndex()==0)
-                {
-                    res = s.executeQuery( "Select * from trees" );
-                    tableSelected = "TREE";
-                }
-                // ... here is the SQL for shrubs
-                if (jComboBox1.getSelectedIndex()==1)
-                {
-                    res = s.executeQuery( "Select * from shrubs" );
-                    tableSelected = "SHRUB";
-                }
-                // ... here is the SQL for seeds
-                if (jComboBox1.getSelectedIndex()==2)
-                {
-                    res = s.executeQuery( "Select * from seeds" );
-                    tableSelected = "SEED";
-                }
-
-                // Now we list the inventory for the selected table
-                jTextArea1.setText("");
-                while (res.next())
-                {
-                    msgString = tableSelected+">>" + res.getString(1) + "::" + res.getString(2) +
-                            " :: "+ res.getString(3) + "::" + res.getString(4);
-                    jTextArea1.append("\n"+msgString);
-
-                } // while
-
-            } catch(Exception e) {
-
-                errString =  "\nProblem with " + tableSelected +" query:: " + e;
-                jTextArea1.append(errString);
-                executeError = true;
-
-            } // try
+        // This button will list the inventory for the product selected
+        String table = (String) jComboBox1.getSelectedItem();
+        LinkedList<InventoryItem> inventory = remote.listInventory(table);
+        DefaultTableModel dtm = new DefaultTableModel();
+        for (InventoryItem item: inventory){
+            Object[] data = {"EEP", item.getProductID(), item.getDescription(), item.getQuantity(), item.getPerUnitCost() };
+            dtm.addRow(data);
         }
+        jTable1.setModel(dtm);
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed

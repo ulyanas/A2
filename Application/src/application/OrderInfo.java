@@ -1,5 +1,5 @@
+package application;
 
-import java.util.Calendar;
 import java.util.List;
 
 /*
@@ -7,12 +7,12 @@ import java.util.List;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 /**
  *
  * @author zmolo_000
  */
 public class OrderInfo {
+
     private String orderID;     // ID of the order
     private String orderTable;  // name of table with list of items
     private String firstName;   // first name

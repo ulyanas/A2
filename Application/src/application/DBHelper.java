@@ -1,3 +1,4 @@
+package application;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -19,7 +20,7 @@ import java.util.List;
  */
 public class DBHelper {
 
-    public void addItem(String table, String productID, String description,
+    public static void addItem(String table, String productID, String description,
             int quantity, float perUnitCost) throws ClassNotFoundException, SQLException {
         String dbName = findDatabaseByTable(table);
         Connection DBConn = createConnection("localhost", dbName);
@@ -43,7 +44,7 @@ public class DBHelper {
         ps.executeQuery();
     }
 
-    public List<InventoryItem> listItems(String table) throws ClassNotFoundException, SQLException {
+    public static LinkedList<InventoryItem> listItems(String table) throws ClassNotFoundException, SQLException {
         String dbName = findDatabaseByTable(table);
         Connection DBConn = createConnection("localhost", dbName);
         PreparedStatement ps = DBConn.prepareStatement("SELECT * FROM ?");
@@ -51,7 +52,7 @@ public class DBHelper {
 
         ResultSet res = ps.executeQuery();
 
-        List<InventoryItem> list = new LinkedList<InventoryItem>();
+        LinkedList<InventoryItem> list = new LinkedList<InventoryItem>();
         while (res.next()) {
             InventoryItem item = new InventoryItem();
             item.setProductID(res.getString(1));
@@ -63,7 +64,7 @@ public class DBHelper {
         return list;
     }
 
-    public void deleteItem(String table, String productID) throws ClassNotFoundException, SQLException {
+    public static void deleteItem(String table, String productID) throws ClassNotFoundException, SQLException {
         String dbName = findDatabaseByTable(table);
         Connection DBConn = createConnection("localhost", dbName);
         PreparedStatement ps;
@@ -80,7 +81,7 @@ public class DBHelper {
         ps.executeUpdate();
     }
 
-    public void decrementItem(String table, String productID) throws ClassNotFoundException, SQLException {
+    public static void decrementItem(String table, String productID) throws ClassNotFoundException, SQLException {
         String dbName = findDatabaseByTable(table);
         Connection DBConn = createConnection("localhost", dbName);
         PreparedStatement ps;
@@ -97,7 +98,7 @@ public class DBHelper {
         ps.executeUpdate();
     }
 
-    public void submitOrder(String firstName, String lastName, String customerAddress, String phoneNumber,
+    public static void submitOrder(String firstName, String lastName, String customerAddress, String phoneNumber,
             float fCost, List<InventoryItem> items) throws ClassNotFoundException, SQLException {
         String dbName = findDatabaseByTable("order");
         Connection DBConn = createConnection("localhost", dbName);
@@ -120,7 +121,7 @@ public class DBHelper {
         int TheYear = rightNow.get(Calendar.YEAR);
         String dateTimeStamp = TheMonth + "/" + TheDay + "/" + TheYear + " "
                 + TheHour + ":" + TheMinute + ":" + TheSecond;
-        
+
         ps = DBConn.prepareStatement("INSERT INTO orders "
                 + "(order_date, first_name, last_name, address, phone, total_cost, shipped, ordertable) "
                 + " VALUES ( ?, ?, ?, ?, ?, ?, ?, ?)");
@@ -146,15 +147,15 @@ public class DBHelper {
         }
     }
 
-    public List<OrderInfo> getPendingOrders() throws ClassNotFoundException, SQLException {
+    public static List<OrderInfo> getPendingOrders() throws ClassNotFoundException, SQLException {
         return getOrders(0);
     }
 
-    public List<OrderInfo> getShippedOrders() throws ClassNotFoundException, SQLException {
+    public static List<OrderInfo> getShippedOrders() throws ClassNotFoundException, SQLException {
         return getOrders(1);
     }
-        
-    public List<OrderInfo> getOrders(int shipped) throws ClassNotFoundException, SQLException{
+
+    public static List<OrderInfo> getOrders(int shipped) throws ClassNotFoundException, SQLException {
         String dbName = findDatabaseByTable("order");
         Connection DBConn = createConnection("localhost", dbName);
         PreparedStatement ps = DBConn.prepareStatement("SELECT * FROM orders WHERE shipped = 1");
@@ -177,7 +178,7 @@ public class DBHelper {
         return orderList;
     }
 
-    public OrderInfo getOrderInfo(int orderID) throws ClassNotFoundException, SQLException {
+    public static OrderInfo getOrderInfo(int orderID) throws ClassNotFoundException, SQLException {
         String dbName = findDatabaseByTable("order");
         Connection DBConn = createConnection("localhost", dbName);
         PreparedStatement ps = DBConn.prepareStatement("SELECT * FROM orders WHERE order_id = ?");
@@ -199,8 +200,8 @@ public class DBHelper {
         }
         return orderInfo;
     }
-    
-    public void shipOrder(int orderId) throws ClassNotFoundException, SQLException{
+
+    public static void shipOrder(int orderId) throws ClassNotFoundException, SQLException {
         String dbName = findDatabaseByTable("order");
         Connection DBConn = createConnection("localhost", dbName);
         PreparedStatement ps = DBConn.prepareStatement("UPDATE orders SET shipped = ? WHERE order_id= ?");
@@ -209,10 +210,28 @@ public class DBHelper {
         ps.executeQuery();
     }
 
+    public static String login(String login, String password) throws ClassNotFoundException, SQLException {
+        String dbName = findDatabaseByTable("users");
+        Connection DBConn = createConnection("localhost", dbName);
+        PreparedStatement ps = DBConn.prepareStatement("SELECT * FROM users WHERE login = ?");
+        ps.setString(1, login);
+        ResultSet res = ps.executeQuery();
+        while (res.next()) {
+            String dbPassword = res.getString(2);
+            String dbRole = res.getString(3);
+            if (dbPassword.equals(password)) {
+                return dbRole;
+            }
+        }
+        return "badAuthorization";
+    }
+
     // finds a suitable database on the server given the table name
-    public String findDatabaseByTable(String table) {
+    private static String findDatabaseByTable(String table) {
         if (table.equals("order")) {
             return "orderinfo";
+        } else if (table.equals("users")) {
+            return "userinfo";
         } else if (table.equals("trees") || table.equals("shrubs") || table.equals("seeds")) {
             return "inventory";
         } // else if (table.equals("cultureboxes") || table.equals("processing") || table.equals("genomics") || table.equals("referencematerials")){
@@ -221,7 +240,7 @@ public class DBHelper {
         }
     }
 
-    public Connection createConnection(String serverIP, String dbName) throws ClassNotFoundException, SQLException {
+    private static Connection createConnection(String serverIP, String dbName) throws ClassNotFoundException, SQLException {
         Connection DBConn = null;       // MySQL connection handle
         Class.forName("com.mysql.jdbc.Driver");
         String sourceURL = "jdbc:mysql://" + serverIP + ":3306/" + dbName;

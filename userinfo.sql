@@ -36,7 +36,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES ('admin','admin','admin'),('manager','manager','manager'),('shipper','shipper','shipper');
+INSERT INTO `users` VALUES ('admin','admin','admin'),('order','order','order'),('shipping','shipping','shipping'),('inventory','inventory','inventory');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 

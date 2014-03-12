@@ -127,10 +127,21 @@ public class LoginJFrame extends javax.swing.JFrame {
         try {
             String role = remote.login(login, password);
             if (!role.equals("badAuthorization")){
-                // goto role
+                if (role.equals("inventory")){
+                    // open inventory
+                }
+                else if (role.equals("order")){
+                    // open order
+                }
+                else if (role.equals("admin")){
+                    // open admin
+                }
+                else if (role.equals("shipping")){
+                    // open shipping
+                }
             }
             else {
-                // notify user about wring password
+                // notify user about wrong password
             }
         } catch (RemoteException ex) {
             Logger.getLogger(LoginJFrame.class.getName()).log(Level.SEVERE, null, ex);

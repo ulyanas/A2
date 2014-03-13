@@ -105,7 +105,7 @@ public class RemoteImplementation extends UnicastRemoteObject implements RemoteI
 
     @Override
     public LinkedList<OrderInfo> getPendingOrders() throws RemoteException {
-        LinkedList<OrderInfo> result = null;
+        LinkedList<OrderInfo> result = new LinkedList<OrderInfo>();
         try {
             result = DBHelper.getPendingOrders();
         } catch (ClassNotFoundException ex) {
@@ -118,7 +118,7 @@ public class RemoteImplementation extends UnicastRemoteObject implements RemoteI
 
     @Override
     public LinkedList<OrderInfo> getShippedOrders() throws RemoteException {
-        LinkedList<OrderInfo> result = null;
+        LinkedList<OrderInfo> result = new LinkedList<OrderInfo>();
         try {
             result = DBHelper.getShippedOrders();
         } catch (ClassNotFoundException ex) {
@@ -131,7 +131,7 @@ public class RemoteImplementation extends UnicastRemoteObject implements RemoteI
 
     @Override
     public OrderInfo getOrderInfo(int orderID) throws RemoteException {
-        OrderInfo result = null;
+        OrderInfo result = new OrderInfo();
         try {
             result = DBHelper.getOrderInfo(orderID);
         } catch (ClassNotFoundException ex) {
@@ -151,5 +151,40 @@ public class RemoteImplementation extends UnicastRemoteObject implements RemoteI
         } catch (SQLException ex) {
             Logger.getLogger(RemoteImplementation.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    @Override
+    public void deleteUser(String login) throws RemoteException {
+        try {
+            DBHelper.deleteUser(login);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(RemoteImplementation.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(RemoteImplementation.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    @Override
+    public void addUser(String login, String password, String role) throws RemoteException {
+        try {
+            DBHelper.addUser(login, password, role);
+        } catch (SQLException ex) {
+            Logger.getLogger(RemoteImplementation.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(RemoteImplementation.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    @Override
+    public LinkedList<UserInfo> getListUsers() throws RemoteException {
+        LinkedList<UserInfo> listUsers = new LinkedList<UserInfo>();
+        try {
+            listUsers = DBHelper.getListUsers();
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(RemoteImplementation.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(RemoteImplementation.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return listUsers;
     }
 }

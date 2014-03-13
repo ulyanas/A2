@@ -1,3 +1,15 @@
+
+import java.net.MalformedURLException;
+import java.rmi.Naming;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
+import java.util.LinkedList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
+
 /*
  * Copyright (c) 2010, Oracle. All rights reserved.
  *
@@ -31,12 +43,26 @@
 
 
 public class NewAdminAppJFrame extends javax.swing.JFrame {
+    private static RemoteInterface remote;
     
     /**
      * Creates new form ContactEditor
      */
     public NewAdminAppJFrame() {
         initComponents();
+        try {
+            System.setProperty("java.security.policy", "policy.txt");
+            System.setSecurityManager(new java.rmi.RMISecurityManager());
+            remote = (RemoteInterface) Naming.lookup("//localhost:1234/Remote");
+        } catch (NotBoundException ex) {
+            Logger.getLogger(NewInventoryMainFrame.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(NewInventoryMainFrame.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (RemoteException ex) {
+            Logger.getLogger(NewInventoryMainFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        updateTable();
     }
     
     /** This method is called from within the constructor to
@@ -89,10 +115,7 @@ public class NewAdminAppJFrame extends javax.swing.JFrame {
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null},
-                {null, null},
-                {null, null},
-                {null, null}
+
             },
             new String [] {
                 "Username", "Role"
@@ -209,13 +232,79 @@ public class NewAdminAppJFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
+        int[] selection = jTable1.getSelectedRows();
+        for (int i = 0; i < selection.length; i++) {
+            String login = (String) jTable1.getModel().getValueAt(selection[i], 0);
+            try {
+                remote.deleteUser(login);
+            } catch (RemoteException ex) {
+                Logger.getLogger(NewInventoryMainFrame.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        updateTable();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // TODO add your handling code here:
+        int index = jComboBox1.getSelectedIndex();
+        String role = findRoleByIndex(index);
+        
+        String login = (String) jTextField1.getText();
+        String password = new String(jPasswordField1.getPassword());
+
+        try {
+            remote.addUser(login, password, role);
+        } catch (RemoteException ex) {
+            Logger.getLogger(NewInventoryMainFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        updateTable();
     }//GEN-LAST:event_jButton2ActionPerformed
+
+    private String findRoleByIndex(int index) {
+        String role = "";
+        switch (index) {
+            case 0:
+                role = "inventory";
+                break;
+            case 1:
+                role = "shipping";
+                break;
+            case 2:
+                role = "order";
+                break;
+            case 3:
+                role = "admin";
+                break;
+            default:
+                break;
+        }
+        return role;
+    }
     
+    private void updateTable() {
+        LinkedList<UserInfo> listUsers = new LinkedList<UserInfo>();
+        try {
+            listUsers = remote.getListUsers();
+        } catch (RemoteException ex) {
+            Logger.getLogger(NewInventoryMainFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        TableColumnModel tcm = jTable1.getTableHeader().getColumnModel();
+        Object[] columnNames = new Object[tcm.getColumnCount()];
+        for (int i = 0; i < tcm.getColumnCount(); i++) {
+            TableColumn tc = tcm.getColumn(i);
+            columnNames[i] = tc.getHeaderValue();
+        }
+
+        DefaultTableModel dtm = new DefaultTableModel(columnNames, 0);
+
+        for (UserInfo user : listUsers) {
+            Object[] data = {user.getLogin(), user.getRole()};
+            dtm.addRow(data);
+        }
+        jTable1.setModel(dtm);
+    }
+
     /**
      * @param args the command line arguments
      */

@@ -258,6 +258,43 @@ public class DBHelper {
         }
         return "badAuthorization";
     }
+    
+    public static LinkedList<UserInfo> getListUsers() throws ClassNotFoundException, SQLException{
+        String dbName = findDatabaseByTable("users");
+        Connection DBConn = createConnection("localhost", dbName);
+        PreparedStatement ps = DBConn.prepareStatement("SELECT * FROM users;");
+        ResultSet res = ps.executeQuery();
+        
+        LinkedList<UserInfo> listUsers = new LinkedList<UserInfo>();
+        while (res.next()) {
+            UserInfo userInfo = new UserInfo();
+            userInfo.setLogin(res.getString(1));
+            userInfo.setRole(res.getString(3));
+            listUsers.add(userInfo);
+        }
+        return listUsers;
+    }
+    
+    public static void addUser(String login, String password, String role) throws SQLException, ClassNotFoundException{
+        String dbName = findDatabaseByTable("users");
+        Connection DBConn = createConnection("localhost", dbName);
+        PreparedStatement ps = DBConn.prepareStatement("INSERT INTO users "
+                + "(login, password, role) "
+                + " VALUES (?, ?, ?);");
+        ps.setString(1, login);
+        ps.setString(2, password);
+        ps.setString(3, role);
+        ps.executeUpdate();
+    }
+    
+    public static void deleteUser(String login) throws ClassNotFoundException, SQLException{
+        String dbName = findDatabaseByTable("users");
+        Connection DBConn = createConnection("localhost", dbName);
+        PreparedStatement ps = DBConn.prepareStatement("DELETE from users WHERE login = ?;");
+        ps.setString(1, login);
+        ps.executeUpdate();
+    }
+    
 
     // finds a suitable database on the server given the table name
     private static String findDatabaseByTable(String table) {

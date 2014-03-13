@@ -35,4 +35,10 @@ public interface RemoteInterface extends Remote {
      public OrderInfo getOrderInfo(int orderID) throws RemoteException;
      
      public void shipOrder(int orderId) throws RemoteException;
+     
+     public void deleteUser(String login) throws RemoteException;
+             
+     public void addUser(String login, String password, String role) throws RemoteException;
+     
+     public LinkedList<UserInfo> getListUsers() throws RemoteException;
 }

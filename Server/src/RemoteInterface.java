@@ -27,4 +27,12 @@ public interface RemoteInterface extends Remote {
      
      public void submitOrder(String firstName, String lastName, String customerAddress, String phoneNumber,
             float fCost, List<InventoryItem> items) throws RemoteException;
+     
+     public LinkedList<OrderInfo> getPendingOrders() throws RemoteException;
+     
+     public LinkedList<OrderInfo> getShippedOrders() throws RemoteException;
+         
+     public OrderInfo getOrderInfo(int orderID) throws RemoteException;
+     
+     public void shipOrder(int orderId) throws RemoteException;
 }

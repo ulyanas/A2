@@ -439,26 +439,15 @@ public class NewOrderJFrame extends javax.swing.JFrame {
             String productID = (String) jTable3.getModel().getValueAt(selection[i], 0);
             String description = (String) jTable3.getModel().getValueAt(selection[i], 1);
             float price = (float) jTable3.getModel().getValueAt(selection[i], 2);
+            
             totalCost += price;
-
-            boolean inInventory = false;
-            for (InventoryItem item : orderedItems) {
-                if (item.getProductID().equals(productID)) {
-                    item.setQuantity(item.getQuantity() + 1);
-                    inInventory = true;
-                    break;
-                }
-            }
-            if (!inInventory) {
-                InventoryItem item = new InventoryItem();
-                item.setProductID(productID);
-                item.setPerUnitCost(price);
-                item.setDescription(description);
-                item.setQuantity(1);
-                orderedItems.add(item);
-            }
+            InventoryItem item = new InventoryItem();
+            item.setProductID(productID);
+            item.setPerUnitCost(price);
+            item.setDescription(description);
+            item.setQuantity(1);
+            orderedItems.add(item);
         }
-
         updateTable4();
         jTextField6.setText("$" + totalCost);
     }//GEN-LAST:event_jButton4ActionPerformed

@@ -102,4 +102,54 @@ public class RemoteImplementation extends UnicastRemoteObject implements RemoteI
             Logger.getLogger(RemoteImplementation.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
+    @Override
+    public LinkedList<OrderInfo> getPendingOrders() throws RemoteException {
+        LinkedList<OrderInfo> result = null;
+        try {
+            result = DBHelper.getPendingOrders();
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(RemoteImplementation.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(RemoteImplementation.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return result;
+    }
+
+    @Override
+    public LinkedList<OrderInfo> getShippedOrders() throws RemoteException {
+        LinkedList<OrderInfo> result = null;
+        try {
+            result = DBHelper.getShippedOrders();
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(RemoteImplementation.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(RemoteImplementation.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return result;
+    }
+
+    @Override
+    public OrderInfo getOrderInfo(int orderID) throws RemoteException {
+        OrderInfo result = null;
+        try {
+            result = DBHelper.getOrderInfo(orderID);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(RemoteImplementation.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(RemoteImplementation.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return result;
+    }
+
+    @Override
+    public void shipOrder(int orderId) throws RemoteException {
+        try {
+            DBHelper.shipOrder(orderId);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(RemoteImplementation.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(RemoteImplementation.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 }

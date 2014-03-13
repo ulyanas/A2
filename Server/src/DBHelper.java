@@ -1,4 +1,3 @@
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -163,24 +162,25 @@ public class DBHelper {
         }
     }
 
-    public static List<OrderInfo> getPendingOrders() throws ClassNotFoundException, SQLException {
+    public static LinkedList<OrderInfo> getPendingOrders() throws ClassNotFoundException, SQLException {
         return getOrders(0);
     }
 
-    public static List<OrderInfo> getShippedOrders() throws ClassNotFoundException, SQLException {
+    public static LinkedList<OrderInfo> getShippedOrders() throws ClassNotFoundException, SQLException {
         return getOrders(1);
     }
 
-    public static List<OrderInfo> getOrders(int shipped) throws ClassNotFoundException, SQLException {
+    public static LinkedList<OrderInfo> getOrders(int shipped) throws ClassNotFoundException, SQLException {
         String dbName = findDatabaseByTable("order");
         Connection DBConn = createConnection("localhost", dbName);
-        PreparedStatement ps = DBConn.prepareStatement("SELECT * FROM orders WHERE shipped = 1;");
+        PreparedStatement ps = DBConn.prepareStatement("SELECT * FROM orders WHERE shipped = ?;");
+        ps.setInt(1, shipped);
         ResultSet res = ps.executeQuery();
 
-        List<OrderInfo> orderList = new LinkedList<OrderInfo>();
+        LinkedList<OrderInfo> orderList = new LinkedList<OrderInfo>();
         while (res.next()) {
             OrderInfo order = new OrderInfo();
-            order.setOrderID(res.getString(1));
+            order.setOrderID(res.getInt(1));
             order.setOrderDate(res.getString(2));
             order.setFirstName(res.getString(3));
             order.setLastName(res.getString(4));
@@ -204,7 +204,7 @@ public class DBHelper {
         OrderInfo orderInfo = new OrderInfo();
 
         while (res.next()) {
-            orderInfo.setOrderID(res.getString(1));
+            orderInfo.setOrderID(res.getInt(1));
             orderInfo.setOrderDate(res.getString(2));
             orderInfo.setFirstName(res.getString(3));
             orderInfo.setLastName(res.getString(4));
@@ -214,16 +214,33 @@ public class DBHelper {
             orderInfo.setTotalCost(res.getFloat(8));
             orderInfo.setOrderTable(res.getString(9));
         }
+        orderInfo.setItems(getOrderItems(orderInfo.getOrderTable()));
         return orderInfo;
+    }
+    
+    public static LinkedList<InventoryItem> getOrderItems(String orderTable) throws ClassNotFoundException, SQLException{
+        String dbName = findDatabaseByTable("order");
+        Connection DBConn = createConnection("localhost", dbName);
+        PreparedStatement ps = DBConn.prepareStatement("SELECT * FROM " + orderTable + ";");
+        ResultSet res = ps.executeQuery();
+
+        LinkedList<InventoryItem> list = new LinkedList<InventoryItem>();
+        while (res.next()) {
+            InventoryItem item = new InventoryItem();
+            item.setProductID(res.getString(2));
+            item.setDescription(res.getString(3));
+            item.setPerUnitCost(res.getFloat(4));
+            list.add(item);
+        }
+        return list;
     }
 
     public static void shipOrder(int orderId) throws ClassNotFoundException, SQLException {
         String dbName = findDatabaseByTable("order");
         Connection DBConn = createConnection("localhost", dbName);
-        PreparedStatement ps = DBConn.prepareStatement("UPDATE orders SET shipped = ? WHERE order_id = ?;");
-        ps.setBoolean(1, true);
-        ps.setInt(2, orderId);
-        ps.executeQuery();
+        PreparedStatement ps = DBConn.prepareStatement("UPDATE orders SET shipped = 1 WHERE order_id = ?;");
+        ps.setInt(1, orderId);
+        ps.executeUpdate();
     }
 
     public static String login(String login, String password) throws ClassNotFoundException, SQLException {

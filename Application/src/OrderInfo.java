@@ -1,5 +1,5 @@
 import java.io.Serializable;
-import java.util.List;
+import java.util.LinkedList;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -12,7 +12,7 @@ import java.util.List;
  */
 public class OrderInfo implements Serializable{
 
-    private String orderID;     // ID of the order
+    private int orderID;     // ID of the order
     private String orderTable;  // name of table with list of items
     private String firstName;   // first name
     private String lastName;    // last name
@@ -21,7 +21,7 @@ public class OrderInfo implements Serializable{
     private String orderDate;   // order date
     private boolean shipped;     // shipped or not
     private float totalCost;     // total cost
-    private List<InventoryItem> items;   // order items
+    private LinkedList<InventoryItem> items;   // order items
 
     /**
      * @return the orderTable
@@ -110,14 +110,14 @@ public class OrderInfo implements Serializable{
     /**
      * @return the items
      */
-    public List<InventoryItem> getItems() {
+    public LinkedList<InventoryItem> getItems() {
         return items;
     }
 
     /**
      * @param items the items to set
      */
-    public void setItems(List<InventoryItem> items) {
+    public void setItems(LinkedList<InventoryItem> items) {
         this.items = items;
     }
 
@@ -152,14 +152,14 @@ public class OrderInfo implements Serializable{
     /**
      * @return the orderID
      */
-    public String getOrderID() {
+    public int getOrderID() {
         return orderID;
     }
 
     /**
      * @param orderID the orderID to set
      */
-    public void setOrderID(String orderID) {
+    public void setOrderID(int orderID) {
         this.orderID = orderID;
     }
 }

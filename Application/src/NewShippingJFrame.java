@@ -362,13 +362,20 @@ public class NewShippingJFrame extends javax.swing.JFrame {
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // jButton2 is responsible for refreshing the list of pending
         // orders.
+        jTextArea4.setText("");
+        jButton1.setEnabled(true);
         getPendingOrders();
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         int[] selection = jTable3.getSelectedRows();
+        jTextArea4.setText("");
+        if(selection.length == 0){
+            jTextArea4.setText("No Orders to be displayed , please add/select an order");
+        }
         if (selection.length > 0){
             OrderInfo orderInfo = null;
+            jTextArea4.setText("");
             currentOrderId = (int) jTable3.getModel().getValueAt(selection[0], 0);
             try {
                 orderInfo = remote.getOrderInfo(currentOrderId);
@@ -401,13 +408,16 @@ public class NewShippingJFrame extends javax.swing.JFrame {
                 dtm.addRow(data);
             }
             jTable4.setModel(dtm);
+            jTextArea4.setText("Record Retrieved");
         }
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        jTextArea4.setText("");
         if (currentOrderId != -1){
-            try {
+         try {
                 remote.shipOrder(currentOrderId);
+                jTextArea4.setText("Order #" + currentOrderId + " status has been marked as Shipped");
             } catch (RemoteException ex) {
                 Logger.getLogger(NewShippingJFrame.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -434,7 +444,7 @@ public class NewShippingJFrame extends javax.swing.JFrame {
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         // This button will display the list of orders that have already
         // have been shipped.
-
+        jTextArea4.setText("");
         getShippedOrders();
 
     }//GEN-LAST:event_jButton4ActionPerformed
@@ -454,7 +464,10 @@ public class NewShippingJFrame extends javax.swing.JFrame {
         } catch (RemoteException ex) {
             Logger.getLogger(NewInventoryMainFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+        if(orders.size() == 0){
+            jButton1.setEnabled(false);
+            jTextArea4.setText("No Pending Orders \n");
+        }
         for (OrderInfo order : orders) {
             Object[] data = {order.getOrderID(), order.getOrderDate(), order.getLastName() + " " + order.getFirstName()};
             for (Object d: data){
@@ -481,6 +494,8 @@ public class NewShippingJFrame extends javax.swing.JFrame {
 
     private void getShippedOrders() {
         LinkedList<OrderInfo> orders = null;
+          jButton1.setEnabled(false);
+          //jButton3.setEnabled(false);
         try {
             orders = remote.getShippedOrders();
         } catch (RemoteException ex) {
@@ -501,6 +516,7 @@ public class NewShippingJFrame extends javax.swing.JFrame {
             dtm.addRow(data);
         }
         jTable3.setModel(dtm);
+        jTextArea4.setText("Shipping Orders Retrieved");
     } // getPendingOrders
 
 

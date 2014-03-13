@@ -476,6 +476,7 @@ public class NewOrderJFrame extends javax.swing.JFrame {
         else {
             flag = true;
             remote.submitOrder(firstName, lastName, address, phone, totalCost, orderedItems);
+            jTextArea3.append("Ordered Submitted for " + firstName +" " + lastName);
         }
         } catch (RemoteException ex) {
             Logger.getLogger(NewInventoryMainFrame.class.getName()).log(Level.SEVERE, null, ex);

@@ -435,6 +435,10 @@ public class NewOrderJFrame extends javax.swing.JFrame {
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         int[] selection = jTable3.getSelectedRows();
+        jTextArea3.setText("");
+        if(selection.length == 0){
+            jTextArea3.append("Please selection atleast one row in the table to place an order");
+        }
         for (int i = 0; i < selection.length; i++) {
             String productID = (String) jTable3.getModel().getValueAt(selection[i], 0);
             String description = (String) jTable3.getModel().getValueAt(selection[i], 1);
@@ -457,15 +461,26 @@ public class NewOrderJFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_jTextField6ActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        jTextArea3.setText("");
+        boolean flag = false;
+        try{
         String firstName = (String) jTextField3.getText();
         String lastName = (String) jTextField4.getText();
         String address = (String) jTextArea4.getText();
         String phone = (String) jTextField5.getText();
-        try {
+        
+        if(firstName.equals("") || lastName.equals("") || address.equals("") || phone.equals("")){
+            jTextArea3.setText("Missing Customer information, please fill all the fields \n");
+        }
+        
+        else {
+            flag = true;
             remote.submitOrder(firstName, lastName, address, phone, totalCost, orderedItems);
+        }
         } catch (RemoteException ex) {
             Logger.getLogger(NewInventoryMainFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
+        if(flag == true){
         totalCost = 0;
         orderedItems = new LinkedList<>();
         updateTable4();
@@ -474,6 +489,7 @@ public class NewOrderJFrame extends javax.swing.JFrame {
         jTextField4.setText("");
         jTextField5.setText("");
         jTextArea4.setText("");
+        }
     }//GEN-LAST:event_jButton5ActionPerformed
 
     private void jTextField4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField4ActionPerformed

@@ -365,6 +365,25 @@ public class NewInventoryMainFrame extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    
+    private boolean checkDuplicate(String productID){
+        int index = jComboBox1.getSelectedIndex();
+        String table = findTableByIndex(index);
+        LinkedList<InventoryItem> inventory = null;
+        try {
+            inventory = remote.listInventory(table);
+        } catch (RemoteException ex) {
+            Logger.getLogger(NewInventoryMainFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        for(InventoryItem item :inventory){
+            if(productID.equals(item.getProductID())){
+                jTextArea2.append("The product ID already exists, please add a new one");
+                return false;
+            }
+        }
+        return true;
+    }  
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // This button will add an item to the inventory
         try{
@@ -388,12 +407,15 @@ public class NewInventoryMainFrame extends javax.swing.JFrame {
             perUnitCost =0;
         }
         
-            boolean valid = true;
+            boolean valid = true, flag = true;
             
              if(productID.equals("")){
                  valid = false;
                  jTextArea2.append("Must supply product ID \n");
                  
+             }
+             if(!productID.equals("")){
+                 flag = checkDuplicate(productID);
              }
              if(description.equals("")){
                  valid = false;
@@ -407,7 +429,7 @@ public class NewInventoryMainFrame extends javax.swing.JFrame {
                  valid = false;
                  jTextArea2.append("Must supply per unit cost and it should be greater than 0 \n ");
              }
-             else if(valid == true)
+             else if(valid == true && flag == true)
              remote.addItem(table, productID, description, quantity, perUnitCost);
         } catch (RemoteException ex) {
             Logger.getLogger(NewInventoryMainFrame.class.getName()).log(Level.SEVERE, null, ex);

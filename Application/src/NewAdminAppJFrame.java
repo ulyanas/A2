@@ -6,6 +6,8 @@ import java.rmi.RemoteException;
 import java.util.LinkedList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
@@ -50,6 +52,7 @@ public class NewAdminAppJFrame extends javax.swing.JFrame {
      */
     public NewAdminAppJFrame() {
         initComponents();
+        setLocationRelativeTo( null );
         try {
             System.setProperty("java.security.policy", "policy.txt");
             System.setSecurityManager(new java.rmi.RMISecurityManager());
@@ -79,6 +82,7 @@ public class NewAdminAppJFrame extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jTextField2 = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
+        jButton3 = new javax.swing.JButton();
         jLabel9 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
@@ -96,6 +100,7 @@ public class NewAdminAppJFrame extends javax.swing.JFrame {
         jScrollPane2 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
         jLabel5 = new javax.swing.JLabel();
+        jButton5 = new javax.swing.JButton();
 
         jLabel8.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         jLabel8.setText("New Admin Application");
@@ -109,10 +114,18 @@ public class NewAdminAppJFrame extends javax.swing.JFrame {
         jLabel6.setText("Database Server IP");
         jLabel6.setAlignmentX(0.3F);
 
+        jButton3.setText("Sign In");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("New User");
 
         jLabel9.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        jLabel9.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel9.setText("New Admin Application");
         jLabel9.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
 
@@ -143,7 +156,6 @@ public class NewAdminAppJFrame extends javax.swing.JFrame {
             }
         });
 
-        jTextField1.setText("Username");
         jTextField1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jTextField1ActionPerformed(evt);
@@ -155,7 +167,6 @@ public class NewAdminAppJFrame extends javax.swing.JFrame {
             }
         });
 
-        jPasswordField1.setText("jPasswordField1");
         jPasswordField1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jPasswordField1ActionPerformed(evt);
@@ -184,60 +195,79 @@ public class NewAdminAppJFrame extends javax.swing.JFrame {
         jLabel7.setAlignmentX(0.3F);
 
         jTextField3.setText("localhost");
+        jTextField3.setFocusable(false);
 
         jTextArea1.setColumns(20);
         jTextArea1.setRows(5);
         jScrollPane2.setViewportView(jTextArea1);
 
-        jLabel5.setText("Messages");
+        jLabel5.setText("Messages:");
+
+        jButton5.setText("Log out");
+        jButton5.setFocusable(false);
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
-                .addContainerGap()
-                .add(jSeparator2))
-            .add(layout.createSequentialGroup()
-                .add(92, 92, 92)
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                    .add(jLabel3)
-                    .add(jLabel4)
-                    .add(jLabel2)
-                    .add(jLabel7))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
-                    .add(jTextField3)
-                    .add(jTextField1)
-                    .add(jPasswordField1)
-                    .add(layout.createSequentialGroup()
-                        .add(14, 14, 14)
-                        .add(jButton2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 161, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                    .add(jComboBox1, 0, 190, Short.MAX_VALUE))
-                .add(0, 0, Short.MAX_VALUE))
             .add(layout.createSequentialGroup()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
+                        .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .add(jLabel9, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 399, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(jButton5))
                     .add(layout.createSequentialGroup()
-                        .add(153, 153, 153)
-                        .add(jLabel9))
-                    .add(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .add(jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 418, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .add(18, 18, 18)
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(jScrollPane2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 158, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                            .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
-                                .add(jButton1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 134, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                .add(14, 14, 14))
-                            .add(jLabel5))))
+                            .add(layout.createSequentialGroup()
+                                .addContainerGap()
+                                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 418, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                .add(18, 18, 18)
+                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                                    .add(jScrollPane2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 158, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                    .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
+                                        .add(jButton1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 134, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                        .add(14, 14, 14))
+                                    .add(jLabel5)))
+                            .add(layout.createSequentialGroup()
+                                .add(116, 116, 116)
+                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+                                    .add(jLabel3)
+                                    .add(jLabel4)
+                                    .add(jLabel2)
+                                    .add(jLabel7))
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
+                                    .add(jTextField3)
+                                    .add(jTextField1)
+                                    .add(jPasswordField1)
+                                    .add(layout.createSequentialGroup()
+                                        .add(14, 14, 14)
+                                        .add(jButton2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 161, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                                    .add(jComboBox1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 190, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))))
+                        .add(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
+            .add(layout.createSequentialGroup()
+                .addContainerGap()
+                .add(jSeparator2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 594, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
-                .add(12, 12, 12)
-                .add(jLabel9)
-                .add(21, 21, 21)
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(layout.createSequentialGroup()
+                        .add(12, 12, 12)
+                        .add(jLabel9))
+                    .add(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .add(jButton5)))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 26, Short.MAX_VALUE)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(jLabel7)
                     .add(jTextField3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
@@ -255,7 +285,7 @@ public class NewAdminAppJFrame extends javax.swing.JFrame {
                     .add(jLabel2))
                 .add(10, 10, 10)
                 .add(jButton2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 39, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 17, Short.MAX_VALUE)
+                .add(18, 18, 18)
                 .add(jSeparator2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 10, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
@@ -265,8 +295,8 @@ public class NewAdminAppJFrame extends javax.swing.JFrame {
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
                         .add(jLabel5)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .add(jScrollPane2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 120, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap())
+                        .add(jScrollPane2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 110, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
+                .add(16, 16, 16))
         );
 
         pack();
@@ -380,6 +410,59 @@ public class NewAdminAppJFrame extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField1ActionPerformed
 
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        String login = jTextField1.getText();
+        String password = new String(jPasswordField1.getPassword());
+        try {
+            String role = remote.login(login, password);
+            if (!role.equals("badAuthorization")){
+                if (role.equals("inventory")){
+                    // open inventory
+                    dispose();
+                    NewInventoryMainFrame newWindow = new NewInventoryMainFrame();
+                    newWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                    newWindow.setVisible(true);
+                }
+                else if (role.equals("order")){
+                    // open order
+                    dispose();
+                    NewOrderJFrame newWindow = new NewOrderJFrame();
+                    newWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                    newWindow.setVisible(true);
+                }
+                else if (role.equals("admin")){
+                    // open admin
+                    dispose();
+                    NewAdminAppJFrame newWindow = new NewAdminAppJFrame();
+                    newWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                    newWindow.setVisible(true);
+                }
+                else if (role.equals("shipping")){
+                    // open shipping
+                    dispose();
+                    NewShippingJFrame newWindow = new NewShippingJFrame();
+                    newWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                    newWindow.setVisible(true);
+                }
+            }
+            else {
+                // notify user about wrong password
+                JOptionPane.showMessageDialog(null, "Wrong Username or Password. Please try again.");
+            }
+        } catch (RemoteException ex) {
+            Logger.getLogger(LoginJFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        // TODO add your handling code here:
+                    dispose();
+                    LoginJFrame newWindow = new LoginJFrame();
+                    newWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                    newWindow.setVisible(true);
+    }//GEN-LAST:event_jButton5ActionPerformed
+
     
     private void updateTable() {
         LinkedList<UserInfo> listUsers = new LinkedList<UserInfo>();
@@ -444,6 +527,8 @@ public class NewAdminAppJFrame extends javax.swing.JFrame {
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton5;
     private javax.swing.JComboBox jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;

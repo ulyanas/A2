@@ -25,6 +25,7 @@ public class LoginJFrame extends javax.swing.JFrame {
 
     public LoginJFrame() {
         initComponents();
+        setLocationRelativeTo( null );
     }
 
     /**
@@ -233,7 +234,7 @@ public class LoginJFrame extends javax.swing.JFrame {
             }
         });
     }
-
+   
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;

@@ -44,7 +44,7 @@ public class NewInventoryMainFrame extends javax.swing.JFrame {
      */
     public NewInventoryMainFrame() {
         initComponents();
-        jLabel1.setText("Inventory Management Application " + versionID);
+       // jLabel1.setText("Inventory Management Application " );
         try {
             System.setProperty("java.security.policy", "policy.txt");
             System.setSecurityManager(new java.rmi.RMISecurityManager());

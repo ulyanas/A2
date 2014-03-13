@@ -60,12 +60,22 @@ public class LoginJFrame extends javax.swing.JFrame {
                 jTextField1ActionPerformed(evt);
             }
         });
+        jTextField1.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                jTextField1FocusGained(evt);
+            }
+        });
 
         jLabel7.setText("Please, Sign In ");
 
         jTextField2.setText("localhost");
 
         jPasswordField1.setText("jPasswordField1");
+        jPasswordField1.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                jPasswordField1FocusGained(evt);
+            }
+        });
 
         jButton1.setText("Sign In");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -167,6 +177,14 @@ public class LoginJFrame extends javax.swing.JFrame {
             Logger.getLogger(LoginJFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jTextField1FocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTextField1FocusGained
+       jTextField1.setText("");
+    }//GEN-LAST:event_jTextField1FocusGained
+
+    private void jPasswordField1FocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jPasswordField1FocusGained
+       jPasswordField1.setText("");
+    }//GEN-LAST:event_jPasswordField1FocusGained
 
     /**
      * @param args the command line arguments

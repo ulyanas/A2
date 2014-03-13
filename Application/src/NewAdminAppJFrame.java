@@ -144,6 +144,11 @@ public class NewAdminAppJFrame extends javax.swing.JFrame {
         });
 
         jTextField1.setText("Username");
+        jTextField1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField1ActionPerformed(evt);
+            }
+        });
         jTextField1.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 jTextField1FocusGained(evt);
@@ -309,13 +314,20 @@ public class NewAdminAppJFrame extends javax.swing.JFrame {
         String login = (String) jTextField1.getText();
         String password = new String(jPasswordField1.getPassword());
        try{
+            if(login.equals("Username")){
+                jTextField1.setText("");
+                jPasswordField1.setText("");
+                jTextArea1.setText("Please choose a \n valid user name \n");
+                flag = false;
+            }
+            else {
             if(login.equals("") || password.equals("")){
                 flag = false;
                 jTextArea1.setText("Login/Password cannot \n be empty string");
             }
             else
                flag = checkDuplicateUser(login);
-                
+            }    
             if(flag) {
               remote.addUser(login, password, role);
               jTextField1.setText("");
@@ -363,6 +375,10 @@ public class NewAdminAppJFrame extends javax.swing.JFrame {
     private void jPasswordField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jPasswordField1ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jPasswordField1ActionPerformed
+
+    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextField1ActionPerformed
 
     
     private void updateTable() {

@@ -41,4 +41,6 @@ public interface RemoteInterface extends Remote {
      public void addUser(String login, String password, String role) throws RemoteException;
      
      public LinkedList<UserInfo> getListUsers() throws RemoteException;
+     
+     public void logout(String username) throws RemoteException;
 }

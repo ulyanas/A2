@@ -587,7 +587,12 @@ public class NewInventoryMainFrame extends javax.swing.JFrame {
             columnNames[i] = tc.getHeaderValue();
         }
 
-        DefaultTableModel dtm = new DefaultTableModel(columnNames, 0);
+        DefaultTableModel dtm = new DefaultTableModel(columnNames, 0){
+            @Override
+                public boolean isCellEditable(int row, int column) {
+                return false;
+             }  
+        };
 
         for (InventoryItem item : inventory) {
             Object[] data = {table, item.getProductID(), item.getDescription(), item.getQuantity(), item.getPerUnitCost()};

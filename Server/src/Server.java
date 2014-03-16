@@ -28,7 +28,7 @@ public class Server {
             RemoteImplementation remote = new RemoteImplementation();
             LocateRegistry.createRegistry(1234);
             Naming.bind("//localhost:1234/Remote", remote);
-            JOptionPane.showMessageDialog(null, "Server Stat");
+            JOptionPane.showMessageDialog(null, "Server Start");
         } catch (RemoteException e) {
             System.out.println("Errors on creating remote object");
             JOptionPane.showMessageDialog(null, e.toString());

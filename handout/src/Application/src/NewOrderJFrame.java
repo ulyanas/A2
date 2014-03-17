@@ -28,7 +28,7 @@ import javax.swing.table.TableColumnModel;
 public class NewOrderJFrame extends javax.swing.JFrame {
 
     String versionID = "v2.10.10";
-    private static RemoteInterface remote;
+    public  RemoteInterface remote;
     private static LinkedList<InventoryItem> orderedItems;
     private static float totalCost = 0;
     private String userName;
@@ -36,23 +36,25 @@ public class NewOrderJFrame extends javax.swing.JFrame {
     /**
      * Creates new form NewJFrame
      */
-    public NewOrderJFrame() {
+    public NewOrderJFrame(RemoteInterface remote, String serverApplicationIPAddress) {
         initComponents();
         setLocationRelativeTo( null );
         //jLabel1.setText("Order Management Application " + versionID);
         orderedItems = new LinkedList<InventoryItem>();
-        try {
-//	System.setProperty("java.security.policy", "client.policy");
-            System.setProperty("java.security.policy", "policy.txt");
-            System.setSecurityManager(new java.rmi.RMISecurityManager());
-            remote = (RemoteInterface) Naming.lookup("//localhost:1234/Remote");
-        } catch (NotBoundException e) {
-            e.printStackTrace();
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
+        this.remote = remote;
+        this.jTextField1.setText(serverApplicationIPAddress);
+//        try {
+////	System.setProperty("java.security.policy", "client.policy");
+//            System.setProperty("java.security.policy", "policy.txt");
+//            System.setSecurityManager(new java.rmi.RMISecurityManager());
+//            remote = (RemoteInterface) Naming.lookup("//localhost:1234/Remote");
+//        } catch (NotBoundException e) {
+//            e.printStackTrace();
+//        } catch (MalformedURLException e) {
+//            e.printStackTrace();
+//        } catch (RemoteException e) {
+//            e.printStackTrace();
+//        }
     }
 
     public void setUserName(String userName){
@@ -246,7 +248,8 @@ public class NewOrderJFrame extends javax.swing.JFrame {
         jLabel11.setFont(new java.awt.Font("Lucida Grande", 0, 10)); // NOI18N
         jLabel11.setText("Database IP");
 
-        jTextField1.setText("localhost");
+        jTextField1.setEditable(false);
+        jTextField1.setText("localhost123");
 
         jLabel12.setText("Address");
 
@@ -647,13 +650,13 @@ public class NewOrderJFrame extends javax.swing.JFrame {
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new NewOrderJFrame().setVisible(true);
-            }
-        });
-    }
+//    public static void main(String args[]) {
+//        java.awt.EventQueue.invokeLater(new Runnable() {
+//            public void run() {
+//                new NewOrderJFrame().setVisible(true);
+//            }
+//        });
+//    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton3;

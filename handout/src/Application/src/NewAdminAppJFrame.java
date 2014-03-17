@@ -45,26 +45,30 @@ import javax.swing.table.TableColumnModel;
 
 
 public class NewAdminAppJFrame extends javax.swing.JFrame {
-    private static RemoteInterface remote;
+    public RemoteInterface remote;
     private String userName;
+    public String serverApplicationIDAddress;
     
     /**
      * Creates new form ContactEditor
      */
-    public NewAdminAppJFrame() {
+    public NewAdminAppJFrame(RemoteInterface remote, String serverApplicationIPAddress) {
         initComponents();
         setLocationRelativeTo( null );
-        try {
-            System.setProperty("java.security.policy", "policy.txt");
-            System.setSecurityManager(new java.rmi.RMISecurityManager());
-            remote = (RemoteInterface) Naming.lookup("//localhost:1234/Remote");
-        } catch (NotBoundException ex) {
-            Logger.getLogger(NewInventoryMainFrame.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (MalformedURLException ex) {
-            Logger.getLogger(NewInventoryMainFrame.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (RemoteException ex) {
-            Logger.getLogger(NewInventoryMainFrame.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        this.remote = remote;
+        this.jTextField3.setText(serverApplicationIPAddress);
+        this.serverApplicationIDAddress = serverApplicationIPAddress;
+//        try {
+//            System.setProperty("java.security.policy", "policy.txt");
+//            System.setSecurityManager(new java.rmi.RMISecurityManager());
+//            remote = (RemoteInterface) Naming.lookup("//localhost:1234/Remote");
+//        } catch (NotBoundException ex) {
+//            Logger.getLogger(NewInventoryMainFrame.class.getName()).log(Level.SEVERE, null, ex);
+//        } catch (MalformedURLException ex) {
+//            Logger.getLogger(NewInventoryMainFrame.class.getName()).log(Level.SEVERE, null, ex);
+//        } catch (RemoteException ex) {
+//            Logger.getLogger(NewInventoryMainFrame.class.getName()).log(Level.SEVERE, null, ex);
+//        }
         
         updateTable();
     }
@@ -208,6 +212,11 @@ public class NewAdminAppJFrame extends javax.swing.JFrame {
 
         jTextField3.setText("localhost");
         jTextField3.setFocusable(false);
+        jTextField3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField3ActionPerformed(evt);
+            }
+        });
 
         jTextArea1.setColumns(20);
         jTextArea1.setRows(5);
@@ -432,28 +441,28 @@ public class NewAdminAppJFrame extends javax.swing.JFrame {
                 if (role.equals("inventory")){
                     // open inventory
                     dispose();
-                    NewInventoryMainFrame newWindow = new NewInventoryMainFrame();
+                    NewInventoryMainFrame newWindow = new NewInventoryMainFrame(remote, serverApplicationIDAddress);
                     newWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                     newWindow.setVisible(true);
                 }
                 else if (role.equals("order")){
                     // open order
                     dispose();
-                    NewOrderJFrame newWindow = new NewOrderJFrame();
+                    NewOrderJFrame newWindow = new NewOrderJFrame(remote, serverApplicationIDAddress);
                     newWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                     newWindow.setVisible(true);
                 }
                 else if (role.equals("admin")){
                     // open admin
                     dispose();
-                    NewAdminAppJFrame newWindow = new NewAdminAppJFrame();
+                    NewAdminAppJFrame newWindow = new NewAdminAppJFrame(remote, serverApplicationIDAddress);
                     newWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                     newWindow.setVisible(true);
                 }
                 else if (role.equals("shipping")){
                     // open shipping
                     dispose();
-                    NewShippingJFrame newWindow = new NewShippingJFrame();
+                    NewShippingJFrame newWindow = new NewShippingJFrame(remote, serverApplicationIDAddress);
                     newWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                     newWindow.setVisible(true);
                 }
@@ -491,6 +500,10 @@ public class NewAdminAppJFrame extends javax.swing.JFrame {
         System.exit(0);
     }//GEN-LAST:event_formWindowClosing
 
+    private void jTextField3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField3ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextField3ActionPerformed
+
     
     private void updateTable() {
         LinkedList<UserInfo> listUsers = new LinkedList<UserInfo>();
@@ -519,37 +532,37 @@ public class NewAdminAppJFrame extends javax.swing.JFrame {
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            javax.swing.UIManager.LookAndFeelInfo[] installedLookAndFeels=javax.swing.UIManager.getInstalledLookAndFeels();
-            for (int idx=0; idx<installedLookAndFeels.length; idx++)
-                if ("Nimbus".equals(installedLookAndFeels[idx].getName())) {
-                    javax.swing.UIManager.setLookAndFeel(installedLookAndFeels[idx].getClassName());
-                    break;
-                }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(NewAdminAppJFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(NewAdminAppJFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(NewAdminAppJFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(NewAdminAppJFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new NewAdminAppJFrame().setVisible(true);
-            }
-        });
-    }
+//    public static void main(String args[]) {
+//        /* Set the Nimbus look and feel */
+//        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+//        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+//         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+//         */
+//        try {
+//            javax.swing.UIManager.LookAndFeelInfo[] installedLookAndFeels=javax.swing.UIManager.getInstalledLookAndFeels();
+//            for (int idx=0; idx<installedLookAndFeels.length; idx++)
+//                if ("Nimbus".equals(installedLookAndFeels[idx].getName())) {
+//                    javax.swing.UIManager.setLookAndFeel(installedLookAndFeels[idx].getClassName());
+//                    break;
+//                }
+//        } catch (ClassNotFoundException ex) {
+//            java.util.logging.Logger.getLogger(NewAdminAppJFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (InstantiationException ex) {
+//            java.util.logging.Logger.getLogger(NewAdminAppJFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (IllegalAccessException ex) {
+//            java.util.logging.Logger.getLogger(NewAdminAppJFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+//            java.util.logging.Logger.getLogger(NewAdminAppJFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        }
+//        //</editor-fold>
+//
+//        /* Create and display the form */
+//        java.awt.EventQueue.invokeLater(new Runnable() {
+//            public void run() {
+//                new NewAdminAppJFrame().setVisible(true);
+//            }
+//        });
+//    }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroup1;

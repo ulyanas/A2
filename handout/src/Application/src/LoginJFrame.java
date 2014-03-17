@@ -21,7 +21,8 @@ public class LoginJFrame extends javax.swing.JFrame {
     /**
      * Creates new form ShippingLoginJFrame
      */
-    private static RemoteInterface remote;
+    public static RemoteInterface remote;
+    public static String serverApplicationIDAddress;
 
     public LoginJFrame() {
         initComponents();
@@ -70,6 +71,11 @@ public class LoginJFrame extends javax.swing.JFrame {
         jLabel7.setText("Please, Sign In ");
 
         jTextField2.setText("localhost");
+        jTextField2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField2ActionPerformed(evt);
+            }
+        });
 
         jPasswordField1.setText("jPasswordField1");
         jPasswordField1.addFocusListener(new java.awt.event.FocusAdapter() {
@@ -138,13 +144,30 @@ public class LoginJFrame extends javax.swing.JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         String login = jTextField1.getText();
         String password = new String(jPasswordField1.getPassword());
+        serverApplicationIDAddress = jTextField2.getText();
+        
+        try {
+//	System.setProperty("java.security.policy", "client.policy");
+            System.setProperty("java.security.policy","policy.txt");
+            System.setSecurityManager(new java.rmi.RMISecurityManager());
+            remote = (RemoteInterface) Naming.lookup("//"+serverApplicationIDAddress+":1234/Remote");
+        } catch (NotBoundException e) {
+            e.printStackTrace();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }        
+        
+        
+        
         try {
             String role = remote.login(login, password);
             if (!role.equals("badAuthorization")){
                 if (role.equals("inventory")){
                     // open inventory
                     dispose();
-                    NewInventoryMainFrame newWindow = new NewInventoryMainFrame();
+                    NewInventoryMainFrame newWindow = new NewInventoryMainFrame(remote, serverApplicationIDAddress);
                     newWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                     newWindow.setUserName(login);
                     newWindow.setVisible(true);
@@ -152,7 +175,7 @@ public class LoginJFrame extends javax.swing.JFrame {
                 else if (role.equals("order")){
                     // open order
                      dispose();
-                    NewOrderJFrame newWindow = new NewOrderJFrame();
+                    NewOrderJFrame newWindow = new NewOrderJFrame(remote, serverApplicationIDAddress);
                     newWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                     newWindow.setUserName(login);
                     newWindow.setVisible(true);
@@ -160,7 +183,7 @@ public class LoginJFrame extends javax.swing.JFrame {
                 else if (role.equals("admin")){
                     // open admin
                      dispose();
-                    NewAdminAppJFrame newWindow = new NewAdminAppJFrame();
+                    NewAdminAppJFrame newWindow = new NewAdminAppJFrame(remote, serverApplicationIDAddress);
                     newWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                     newWindow.setUserName(login);
                     newWindow.setVisible(true);
@@ -168,7 +191,7 @@ public class LoginJFrame extends javax.swing.JFrame {
                 else if (role.equals("shipping")){
                     // open shipping
                      dispose();
-                    NewShippingJFrame newWindow = new NewShippingJFrame();
+                    NewShippingJFrame newWindow = new NewShippingJFrame(remote, serverApplicationIDAddress);
                     newWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                     newWindow.setUserName(login);
                     newWindow.setVisible(true);
@@ -190,6 +213,10 @@ public class LoginJFrame extends javax.swing.JFrame {
     private void jPasswordField1FocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jPasswordField1FocusGained
        jPasswordField1.setText("");
     }//GEN-LAST:event_jPasswordField1FocusGained
+
+    private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextField2ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -219,18 +246,6 @@ public class LoginJFrame extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        try {
-//	System.setProperty("java.security.policy", "client.policy");
-            System.setProperty("java.security.policy","policy.txt");
-            System.setSecurityManager(new java.rmi.RMISecurityManager());
-            remote = (RemoteInterface) Naming.lookup("//localhost:1234/Remote");
-        } catch (NotBoundException e) {
-            e.printStackTrace();
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
         
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {

@@ -32,26 +32,28 @@ public class NewShippingJFrame extends javax.swing.JFrame {
     Integer updateOrderID;
     String versionID = "v2.10.10";
     
-    private static RemoteInterface remote;
+    public RemoteInterface remote;
     private static int currentOrderId = -1;
     private String userName;
     
     /** Creates new form NewJFrame */
-    public NewShippingJFrame() {
+    public NewShippingJFrame(RemoteInterface remote, String serverApplicationIPAddress) {
         initComponents();
         setLocationRelativeTo( null );
         jLabel1.setText("Shipping Application " + versionID);
-        try {
-            System.setProperty("java.security.policy", "policy.txt");
-            System.setSecurityManager(new java.rmi.RMISecurityManager());
-            remote = (RemoteInterface) Naming.lookup("//localhost:1234/Remote");
-        } catch (NotBoundException ex) {
-            Logger.getLogger(NewInventoryMainFrame.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (MalformedURLException ex) {
-            Logger.getLogger(NewInventoryMainFrame.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (RemoteException ex) {
-            Logger.getLogger(NewInventoryMainFrame.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        this.remote = remote;
+        this.jTextField1.setText(serverApplicationIPAddress);
+//        try {
+//            System.setProperty("java.security.policy", "policy.txt");
+//            System.setSecurityManager(new java.rmi.RMISecurityManager());
+//            remote = (RemoteInterface) Naming.lookup("//localhost:1234/Remote");
+//        } catch (NotBoundException ex) {
+//            Logger.getLogger(NewInventoryMainFrame.class.getName()).log(Level.SEVERE, null, ex);
+//        } catch (MalformedURLException ex) {
+//            Logger.getLogger(NewInventoryMainFrame.class.getName()).log(Level.SEVERE, null, ex);
+//        } catch (RemoteException ex) {
+//            Logger.getLogger(NewInventoryMainFrame.class.getName()).log(Level.SEVERE, null, ex);
+//        }
     }
 
     public void setUserName(String userName){
@@ -614,13 +616,13 @@ public class NewShippingJFrame extends javax.swing.JFrame {
     /**
     * @param args the command line arguments
     */
-    public static void main(String args[]) {
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new NewShippingJFrame().setVisible(true);
-            }
-        });
-    }
+//    public static void main(String args[]) {
+//        java.awt.EventQueue.invokeLater(new Runnable() {
+//            public void run() {
+//                new NewShippingJFrame().setVisible(true);
+//            }
+//        });
+//    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;

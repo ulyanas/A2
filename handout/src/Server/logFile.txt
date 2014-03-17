@@ -12,3 +12,7 @@ shipping logged in at 2014 03/15 16:05:55
 shipping logged out at 2014 03/15 16:05:58
 order logged in at 2014 03/15 16:06:10
 order logged out at 2014 03/15 16:06:12
+order logged in at 2014 03/15 17:09:29
+order logged out at 2014 03/15 17:10:34
+order logged in at 2014 03/15 17:10:38
+order logged out at 2014 03/15 17:12:15

@@ -132,7 +132,7 @@ public class NewOrderJFrame extends javax.swing.JFrame {
             }
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
+                return false;
             }
         });
         jTable1.getTableHeader().setResizingAllowed(false);
@@ -163,7 +163,7 @@ public class NewOrderJFrame extends javax.swing.JFrame {
             }
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
+                return false;
             }
         });
         jTable2.getTableHeader().setResizingAllowed(false);
@@ -289,7 +289,7 @@ public class NewOrderJFrame extends javax.swing.JFrame {
             }
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
+                return false;
             }
         });
         jTable3.getTableHeader().setResizingAllowed(false);
@@ -325,7 +325,7 @@ public class NewOrderJFrame extends javax.swing.JFrame {
             }
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
+                return false;
             }
         });
         jTable4.setEnabled(false);
@@ -620,8 +620,17 @@ public class NewOrderJFrame extends javax.swing.JFrame {
             TableColumn tc = tcm.getColumn(i);
             columnNames[i] = tc.getHeaderValue();
         }
-
-        DefaultTableModel dtm = new DefaultTableModel(columnNames, 0);
+        
+      
+        
+        DefaultTableModel dtm = new DefaultTableModel(columnNames, 0) {
+        
+        @Override
+        public boolean isCellEditable(int row, int column) {
+           //all cells false
+           return false;
+        }  
+        };
 
         for (InventoryItem item : inventory) {
             Object[] data = {item.getProductID(), item.getDescription(), item.getPerUnitCost(), item.getQuantity()};
@@ -638,7 +647,13 @@ public class NewOrderJFrame extends javax.swing.JFrame {
             columnNames[i] = tc.getHeaderValue();
         }
 
-        DefaultTableModel dtm = new DefaultTableModel(columnNames, 0);
+        DefaultTableModel dtm = new DefaultTableModel(columnNames, 0){
+         @Override
+        public boolean isCellEditable(int row, int column) {
+           //all cells false
+           return false;
+        }  
+        };
 
         for (InventoryItem item : orderedItems) {
             Object[] data = {item.getProductID(), item.getDescription(), item.getPerUnitCost(), item.getQuantity()};

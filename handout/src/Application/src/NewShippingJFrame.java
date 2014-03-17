@@ -232,9 +232,10 @@ public class NewShippingJFrame extends javax.swing.JFrame {
             }
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
+                return false;
             }
         });
+        jTable3.setEditingColumn(-1);
         jTable3.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         jTable3.getTableHeader().setResizingAllowed(false);
         jTable3.getTableHeader().setReorderingAllowed(false);
@@ -461,7 +462,12 @@ public class NewShippingJFrame extends javax.swing.JFrame {
                 columnNames[i] = tc.getHeaderValue();
             }
 
-            DefaultTableModel dtm = new DefaultTableModel(columnNames, 0);
+            DefaultTableModel dtm = new DefaultTableModel(columnNames, 0){
+                @Override
+                public boolean isCellEditable(int row, int column) {
+                return false;
+             }  
+            };
 
             for (InventoryItem item : items) {
                 Object[] data = {item.getProductID(), item.getDescription(), item.getPerUnitCost()};
@@ -495,7 +501,12 @@ public class NewShippingJFrame extends javax.swing.JFrame {
                 columnNames[i] = tc.getHeaderValue();
             }
 
-            DefaultTableModel dtm = new DefaultTableModel(columnNames, 0);
+            DefaultTableModel dtm = new DefaultTableModel(columnNames, 0){
+                @Override
+                public boolean isCellEditable(int row, int column) {
+                return false;
+             }  
+            };
             jTable4.setModel(dtm);
         }
         getShippedOrders();
@@ -576,7 +587,12 @@ public class NewShippingJFrame extends javax.swing.JFrame {
             columnNames[i] = tc.getHeaderValue();
         }
 
-        DefaultTableModel dtm = new DefaultTableModel(columnNames, 0);
+        DefaultTableModel dtm = new DefaultTableModel(columnNames, 0){
+             @Override
+                public boolean isCellEditable(int row, int column) {
+                return false;
+                }
+        };
 
         for (OrderInfo order : orders) {
             Object[] data = {order.getOrderID(), order.getOrderDate(), order.getLastName() + " " + order.getFirstName()};
@@ -602,7 +618,11 @@ public class NewShippingJFrame extends javax.swing.JFrame {
             columnNames[i] = tc.getHeaderValue();
         }
 
-        DefaultTableModel dtm = new DefaultTableModel(columnNames, 0);
+        DefaultTableModel dtm = new DefaultTableModel(columnNames, 0){
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+        return false;
+    }
+        };
 
         for (OrderInfo order : orders) {
             Object[] data = {order.getOrderID(), order.getOrderDate(), order.getLastName() + " " + order.getFirstName()};
